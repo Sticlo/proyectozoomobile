@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">proyectozoo</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="username">Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="login_error">Usuario o contraseña incorrectos</string>
 </resources>
