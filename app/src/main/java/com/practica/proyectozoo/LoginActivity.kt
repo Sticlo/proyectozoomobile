@@ -12,6 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
+import android.widget.Toast
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.*
@@ -43,6 +46,8 @@ class LoginActivity : ComponentActivity() {
 fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
     var error by remember { mutableStateOf(false) }
 
     Column(modifier.padding(16.dp)) {
@@ -61,6 +66,28 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
         )
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
+
+            when {
+                !username.matches(Regex("^[A-Za-z0-9]+$")) -> Toast.makeText(
+                    context,
+                    context.getString(R.string.invalid_username),
+                    Toast.LENGTH_SHORT
+                ).show()
+                password.isBlank() -> Toast.makeText(
+                    context,
+                    context.getString(R.string.invalid_password),
+                    Toast.LENGTH_SHORT
+                ).show()
+                !db.validateUser(username, password) -> Toast.makeText(
+                    context,
+                    context.getString(R.string.invalid_login),
+                    Toast.LENGTH_SHORT
+                ).show()
+                else -> {
+                    onSuccess()
+                }
+            }
+
             error = !db.validateUser(username, password)
             if (!error) onSuccess()
         }, modifier = Modifier.fillMaxWidth()) {
@@ -72,6 +99,7 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
         }) {
             Text(stringResource(R.string.forgot_password))
         }
+
         if (error) {
             Text(stringResource(R.string.login_error), color = androidx.compose.ui.graphics.Color.Red)
         }

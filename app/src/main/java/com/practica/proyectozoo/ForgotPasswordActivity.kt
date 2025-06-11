@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import android.widget.Toast
+import android.util.Patterns
 import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 
@@ -41,6 +43,7 @@ fun ForgotPasswordScreen(
     var email by remember { mutableStateOf("") }
     var result by remember { mutableStateOf<String?>(null) }
     var notFound by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Column(modifier.padding(16.dp)) {
         OutlinedTextField(
@@ -51,6 +54,15 @@ fun ForgotPasswordScreen(
         )
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(context, context.getString(R.string.invalid_email), Toast.LENGTH_SHORT).show()
+            } else {
+                val pass = db.getPasswordByEmail(email)
+                if (pass != null) {
+                    result = pass
+                } else {
+                    notFound = true
+                }
             val pass = db.getPasswordByEmail(email)
             if (pass != null) {
                 result = pass

@@ -4,6 +4,10 @@
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
     <string name="login_error">Usuario o contraseña incorrectos</string>
+    <string name="invalid_login">Datos de acceso inválidos</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="email">Correo electrónico</string>
+    <string name="invalid_email">Correo electrónico inválido</string>
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="email">Correo electrónico</string>
     <string name="send_reminder">Enviar recordatorio</string>
@@ -12,4 +16,14 @@
     <string name="email_not_found">Correo no encontrado</string>
     <string name="accept">Aceptar</string>
     <string name="error">Error</string>
+    <string name="invalid_username">El usuario solo admite letras y números</string>
+    <string name="invalid_password">Debes ingresar una contraseña</string>
+    <string name="invalid_perfil_id">El ID de perfil debe ser numérico</string>
+    <string name="user_saved">Usuario guardado correctamente</string>
+    <string name="user_updated">Usuario actualizado correctamente</string>
+    <string name="add_user">Agregar usuario</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="save">Guardar</string>
+    <string name="perfil_id">ID Perfil</string>
 </resources>
