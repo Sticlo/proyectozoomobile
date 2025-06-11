@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Arrangement
 import android.content.Intent
 import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.data.Zoo
+import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 
 class ZooListActivity : ComponentActivity() {
@@ -47,6 +48,10 @@ class ZooListActivity : ComponentActivity() {
                     }
                 ) { padding ->
                     ZooListScreen(db, Modifier.padding(padding))
+        setContent {
+            ProyectozooTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) {
+                    ZooListScreen(db)
                 }
             }
         }
@@ -78,6 +83,11 @@ fun ZooListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
                     }) { Text(stringResource(R.string.delete)) }
                 }
             }
+fun ZooListScreen(db: DatabaseHelper) {
+    val zoos = remember { db.getZoos() }
+    LazyColumn {
+        items(zoos) { zoo ->
+            Text(text = zoo)
         }
     }
 }

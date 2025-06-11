@@ -8,6 +8,8 @@
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="email">Correo electrónico</string>
     <string name="invalid_email">Correo electrónico inválido</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="email">Correo electrónico</string>
     <string name="send_reminder">Enviar recordatorio</string>
     <string name="reminder_title">Recordatorio</string>
     <string name="your_password_is">Tu contraseña es: %1$s</string>

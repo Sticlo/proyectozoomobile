@@ -15,6 +15,10 @@ import androidx.compose.runtime.*
 import android.widget.Toast
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
@@ -31,6 +35,7 @@ class LoginActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LoginScreen(db, Modifier.padding(innerPadding)) {
                         startActivity(Intent(this, MainMenuActivity::class.java))
+                        startActivity(Intent(this, UserListActivity::class.java))
                     }
                 }
             }
@@ -43,7 +48,7 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
-
+    var error by remember { mutableStateOf(false) }
     Column(modifier.padding(16.dp)) {
         OutlinedTextField(
             value = username,
@@ -80,6 +85,9 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
                     onSuccess()
                 }
             }
+
+            error = !db.validateUser(username, password)
+            if (!error) onSuccess()
         }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.login))
         }
@@ -88,6 +96,9 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
             context.startActivity(Intent(context, ForgotPasswordActivity::class.java))
         }) {
             Text(stringResource(R.string.forgot_password))
+        }
+        if (error) {
+            Text(stringResource(R.string.login_error), color = androidx.compose.ui.graphics.Color.Red)
         }
     }
 }

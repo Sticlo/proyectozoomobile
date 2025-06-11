@@ -63,6 +63,11 @@ fun ForgotPasswordScreen(
                 } else {
                     notFound = true
                 }
+            val pass = db.getPasswordByEmail(email)
+            if (pass != null) {
+                result = pass
+            } else {
+                notFound = true
             }
         }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.send_reminder))

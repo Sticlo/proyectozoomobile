@@ -7,6 +7,7 @@ import com.practica.proyectozoo.data.Usuario
 import com.practica.proyectozoo.data.Especie
 import com.practica.proyectozoo.data.Zoo
 
+
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
     DATABASE_NAME,
@@ -137,7 +138,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         }
         return list
     }
-
     fun getPasswordByEmail(email: String): String? {
         readableDatabase.rawQuery(
             "SELECT password_hash FROM usuarios WHERE email=?",
@@ -322,7 +322,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             arrayOf(id)
         )
     }
-
     companion object {
         private const val DATABASE_NAME = "zoo_db.db"
         private const val DATABASE_VERSION = 1

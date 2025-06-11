@@ -12,6 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.data.Especie
+import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 
 class EspecieListActivity : ComponentActivity() {
@@ -47,6 +51,10 @@ class EspecieListActivity : ComponentActivity() {
                     }
                 ) { padding ->
                     EspecieListScreen(db, Modifier.padding(padding))
+        setContent {
+            ProyectozooTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) {
+                    EspecieListScreen(db)
                 }
             }
         }
@@ -78,6 +86,11 @@ fun EspecieListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
                     }) { Text(stringResource(R.string.delete)) }
                 }
             }
+fun EspecieListScreen(db: DatabaseHelper) {
+    val especies = remember { db.getEspecies() }
+    LazyColumn {
+        items(especies) { esp ->
+            Text(text = esp)
         }
     }
 }
