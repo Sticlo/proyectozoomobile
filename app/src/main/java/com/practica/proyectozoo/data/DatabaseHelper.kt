@@ -3,6 +3,7 @@ package com.practica.proyectozoo.data
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.practica.proyectozoo.data.Usuario
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
@@ -147,6 +148,59 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         writableDatabase.execSQL(
             "UPDATE usuarios SET password_hash=? WHERE username=?",
             arrayOf(newPassword, username)
+        )
+    }
+
+    fun insertUsuario(username: String, email: String, password: String, perfilId: Int) {
+        writableDatabase.execSQL(
+            "INSERT INTO usuarios(username,email,password_hash,id_perfil) VALUES(?,?,?,?)",
+            arrayOf(username, email, password, perfilId)
+        )
+    }
+
+    fun getAllUsuariosDetail(): List<Usuario> {
+        val list = mutableListOf<Usuario>()
+        readableDatabase.rawQuery(
+            "SELECT id_usuario, username, email, password_hash, id_perfil FROM usuarios",
+            null
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(
+                    Usuario(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getInt(4)
+                    )
+                )
+            }
+        }
+        return list
+    }
+
+    fun getUsuario(id: Int): Usuario? {
+        readableDatabase.rawQuery(
+            "SELECT id_usuario, username, email, password_hash, id_perfil FROM usuarios WHERE id_usuario=?",
+            arrayOf(id.toString())
+        ).use { c ->
+            return if (c.moveToFirst()) {
+                Usuario(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4))
+            } else null
+        }
+    }
+
+    fun updateUsuario(id: Int, username: String, email: String, password: String, perfilId: Int) {
+        writableDatabase.execSQL(
+            "UPDATE usuarios SET username=?, email=?, password_hash=?, id_perfil=? WHERE id_usuario=?",
+            arrayOf(username, email, password, perfilId, id)
+        )
+    }
+
+    fun deleteUsuario(id: Int) {
+        writableDatabase.execSQL(
+            "DELETE FROM usuarios WHERE id_usuario=?",
+            arrayOf(id)
         )
     }
 

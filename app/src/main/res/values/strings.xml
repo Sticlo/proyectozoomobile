@@ -12,4 +12,9 @@
     <string name="email_not_found">Correo no encontrado</string>
     <string name="accept">Aceptar</string>
     <string name="error">Error</string>
+    <string name="add_user">Agregar usuario</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="save">Guardar</string>
+    <string name="perfil_id">ID Perfil</string>
 </resources>
