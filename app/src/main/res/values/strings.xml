@@ -26,4 +26,24 @@
     <string name="delete">Eliminar</string>
     <string name="save">Guardar</string>
     <string name="perfil_id">ID Perfil</string>
+    <string name="add_especie">Agregar especie</string>
+    <string name="add_zoo">Agregar zoo</string>
+    <string name="nombre">Nombre</string>
+    <string name="ciudad_id">ID Ciudad</string>
+    <string name="tamano">Tamaño</string>
+    <string name="presupuesto">Presupuesto</string>
+    <string name="invalid_nombre">Debes ingresar un nombre</string>
+    <string name="invalid_ciudad_id">ID de ciudad inválido</string>
+    <string name="invalid_tamano">Tamaño inválido</string>
+    <string name="invalid_presupuesto">Presupuesto inválido</string>
+    <string name="zoo_saved">Zoo guardado correctamente</string>
+    <string name="zoo_updated">Zoo actualizado correctamente</string>
+    <string name="nombre_vulgar">Nombre vulgar</string>
+    <string name="nombre_cientifico">Nombre científico</string>
+    <string name="familia">Familia</string>
+    <string name="en_peligro">En peligro de extinción</string>
+    <string name="invalid_nombre_vulgar">Debes ingresar el nombre vulgar</string>
+    <string name="invalid_nombre_cientifico">Debes ingresar el nombre científico</string>
+    <string name="especie_saved">Especie guardada correctamente</string>
+    <string name="especie_updated">Especie actualizada correctamente</string>
 </resources>

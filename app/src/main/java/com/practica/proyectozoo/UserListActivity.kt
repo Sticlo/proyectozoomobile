@@ -65,7 +65,6 @@ class UserListActivity : ComponentActivity() {
 }
 
 @Composable
-
 fun UserListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val usuarios = remember { mutableStateListOf<Usuario>() }

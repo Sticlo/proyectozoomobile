@@ -34,6 +34,7 @@ class LoginActivity : ComponentActivity() {
             ProyectozooTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LoginScreen(db, Modifier.padding(innerPadding)) {
+                        startActivity(Intent(this, MainMenuActivity::class.java))
                         startActivity(Intent(this, UserListActivity::class.java))
                     }
                 }
@@ -47,9 +48,7 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
-
     var error by remember { mutableStateOf(false) }
-
     Column(modifier.padding(16.dp)) {
         OutlinedTextField(
             value = username,
@@ -66,7 +65,6 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
         )
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
-
             when {
                 !username.matches(Regex("^[A-Za-z0-9]+$")) -> Toast.makeText(
                     context,
@@ -99,7 +97,6 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
         }) {
             Text(stringResource(R.string.forgot_password))
         }
-
         if (error) {
             Text(stringResource(R.string.login_error), color = androidx.compose.ui.graphics.Color.Red)
         }
