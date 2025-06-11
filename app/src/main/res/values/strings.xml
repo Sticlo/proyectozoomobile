@@ -4,4 +4,12 @@
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
     <string name="login_error">Usuario o contraseña incorrectos</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="email">Correo electrónico</string>
+    <string name="send_reminder">Enviar recordatorio</string>
+    <string name="reminder_title">Recordatorio</string>
+    <string name="your_password_is">Tu contraseña es: %1$s</string>
+    <string name="email_not_found">Correo no encontrado</string>
+    <string name="accept">Aceptar</string>
+    <string name="error">Error</string>
 </resources>

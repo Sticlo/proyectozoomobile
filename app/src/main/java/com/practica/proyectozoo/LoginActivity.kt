@@ -10,6 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +65,12 @@ fun LoginScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onSuccess: ()
             if (!error) onSuccess()
         }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.login))
+        }
+        TextButton(onClick = {
+            val context = LocalContext.current
+            context.startActivity(Intent(context, ForgotPasswordActivity::class.java))
+        }) {
+            Text(stringResource(R.string.forgot_password))
         }
         if (error) {
             Text(stringResource(R.string.login_error), color = androidx.compose.ui.graphics.Color.Red)

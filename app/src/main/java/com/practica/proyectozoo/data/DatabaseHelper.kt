@@ -134,6 +134,21 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         }
         return list
     }
+    fun getPasswordByEmail(email: String): String? {
+        readableDatabase.rawQuery(
+            "SELECT password_hash FROM usuarios WHERE email=?",
+            arrayOf(email)
+        ).use { cursor ->
+            return if (cursor.moveToFirst()) cursor.getString(0) else null
+        }
+    }
+
+    fun updatePassword(username: String, newPassword: String) {
+        writableDatabase.execSQL(
+            "UPDATE usuarios SET password_hash=? WHERE username=?",
+            arrayOf(newPassword, username)
+        )
+    }
 
     companion object {
         private const val DATABASE_NAME = "zoo_db.db"
