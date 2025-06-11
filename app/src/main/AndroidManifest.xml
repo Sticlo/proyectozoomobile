@@ -28,6 +28,9 @@
         <activity android:name=".EspecieListActivity" />
         <activity android:name=".AnimalListActivity" />
         <activity android:name=".UserEditActivity" />
+        <activity android:name=".ZooEditActivity" />
+        <activity android:name=".EspecieEditActivity" />
+        <activity android:name=".MainMenuActivity" />
         <activity android:name=".ForgotPasswordActivity" />
     </application>
 

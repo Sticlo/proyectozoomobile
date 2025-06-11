@@ -15,7 +15,7 @@ import androidx.compose.runtime.*
 import android.widget.Toast
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.Modifier
+                        startActivity(Intent(this, MainMenuActivity::class.java))
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier

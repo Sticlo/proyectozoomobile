@@ -4,6 +4,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.practica.proyectozoo.data.Usuario
+import com.practica.proyectozoo.data.Especie
+import com.practica.proyectozoo.data.Zoo
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
@@ -200,6 +202,122 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     fun deleteUsuario(id: Int) {
         writableDatabase.execSQL(
             "DELETE FROM usuarios WHERE id_usuario=?",
+            arrayOf(id)
+        )
+    }
+
+    fun insertEspecie(nombreVulgar: String, nombreCientifico: String, familia: String?, enPeligro: Boolean) {
+        writableDatabase.execSQL(
+            "INSERT INTO especies(nombre_vulgar,nombre_cientifico,familia,en_peligro_extincion) VALUES(?,?,?,?)",
+            arrayOf(nombreVulgar, nombreCientifico, familia, if (enPeligro) 1 else 0)
+        )
+    }
+
+    fun getAllEspeciesDetail(): List<Especie> {
+        val list = mutableListOf<Especie>()
+        readableDatabase.rawQuery(
+            "SELECT id_especie, nombre_vulgar, nombre_cientifico, familia, en_peligro_extincion FROM especies",
+            null
+        ).use { c ->
+            while (c.moveToNext()) {
+                list.add(
+                    Especie(
+                        c.getInt(0),
+                        c.getString(1),
+                        c.getString(2),
+                        c.getString(3),
+                        c.getInt(4) == 1
+                    )
+                )
+            }
+        }
+        return list
+    }
+
+    fun getEspecie(id: Int): Especie? {
+        readableDatabase.rawQuery(
+            "SELECT id_especie, nombre_vulgar, nombre_cientifico, familia, en_peligro_extincion FROM especies WHERE id_especie=?",
+            arrayOf(id.toString())
+        ).use { c ->
+            return if (c.moveToFirst()) {
+                Especie(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4) == 1)
+            } else null
+        }
+    }
+
+    fun updateEspecie(id: Int, nombreVulgar: String, nombreCientifico: String, familia: String?, enPeligro: Boolean) {
+        writableDatabase.execSQL(
+            "UPDATE especies SET nombre_vulgar=?, nombre_cientifico=?, familia=?, en_peligro_extincion=? WHERE id_especie=?",
+            arrayOf(nombreVulgar, nombreCientifico, familia, if (enPeligro) 1 else 0, id)
+        )
+    }
+
+    fun deleteEspecie(id: Int) {
+        writableDatabase.execSQL(
+            "DELETE FROM especies WHERE id_especie=?",
+            arrayOf(id)
+        )
+    }
+
+    fun insertZoo(nombre: String, ciudadId: Int, tamano: Int?, presupuesto: Double?) {
+        writableDatabase.execSQL(
+            "INSERT INTO zoos(nombre,id_ciudad,tamano_m2,presupuesto_anual) VALUES(?,?,?,?)",
+            arrayOf(nombre, ciudadId, tamano, presupuesto)
+        )
+    }
+
+    fun getAllZoosDetail(): List<Zoo> {
+        val list = mutableListOf<Zoo>()
+        readableDatabase.rawQuery(
+            "SELECT id_zoo, nombre, id_ciudad, tamano_m2, presupuesto_anual FROM zoos",
+            null
+        ).use { c ->
+            while (c.moveToNext()) {
+                val tam = if (c.isNull(3)) null else c.getInt(3)
+                val pre = if (c.isNull(4)) null else c.getDouble(4)
+                list.add(
+                    Zoo(
+                        c.getInt(0),
+                        c.getString(1),
+                        c.getInt(2),
+                        tam,
+                        pre
+                    )
+                )
+            }
+        }
+        return list
+    }
+
+    fun getZoo(id: Int): Zoo? {
+        readableDatabase.rawQuery(
+            "SELECT id_zoo, nombre, id_ciudad, tamano_m2, presupuesto_anual FROM zoos WHERE id_zoo=?",
+            arrayOf(id.toString())
+        ).use { c ->
+            return if (c.moveToFirst()) {
+                val tam = if (c.isNull(3)) null else c.getInt(3)
+                val pre = if (c.isNull(4)) null else c.getDouble(4)
+                Zoo(
+                    c.getInt(0),
+                    c.getString(1),
+                    c.getInt(2),
+                    tam,
+                    pre
+                )
+            } else null
+        }
+    }
+
+    fun updateZoo(id: Int, nombre: String, ciudadId: Int, tamano: Int?, presupuesto: Double?) {
+        writableDatabase.execSQL(
+            "UPDATE zoos SET nombre=?, id_ciudad=?, tamano_m2=?, presupuesto_anual=? WHERE id_zoo=?",
+            arrayOf(nombre, ciudadId, tamano, presupuesto, id)
+        )
+    }
+
+    fun deleteZoo(id: Int) {
+        writableDatabase.execSQL(
+            "DELETE FROM zoos WHERE id_zoo=?",
             arrayOf(id)
         )
     }
