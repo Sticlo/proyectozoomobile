@@ -135,7 +135,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         }
         return list
     }
-
     fun getPasswordByEmail(email: String): String? {
         readableDatabase.rawQuery(
             "SELECT password_hash FROM usuarios WHERE email=?",
