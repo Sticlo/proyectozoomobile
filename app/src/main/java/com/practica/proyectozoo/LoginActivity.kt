@@ -7,11 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Pets
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -20,17 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practica.proyectozoo.data.DatabaseHelper
-import com.practica.proyectozoo.ForgotPasswordActivity
-import com.practica.proyectozoo.MainMenuActivity
-import com.practica.proyectozoo.ui.theme.ProyectozooTheme
-import com.practica.proyectozoo.ui.theme.JungleGreen
 import com.practica.proyectozoo.ui.theme.EarthBrown
+import com.practica.proyectozoo.ui.theme.JungleGreen
+import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,27 +32,22 @@ class LoginActivity : ComponentActivity() {
 
         setContent {
             ProyectozooTheme {
-                // Fondo degradado personalizado para dar un aspecto más natural
+                // Fondo degradado sencillo
                 Box(
-                    modifier = Modifier
+                    Modifier
                         .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    JungleGreen,
-                                    EarthBrown
-                                )
-                            )
-                        )
+                        .background(Brush.verticalGradient(listOf(JungleGreen, EarthBrown)))
                 ) {
-                    // Tarjeta centrada con el formulario
-                    LoginCard(
+                    // Formulario en el centro
+                    SimpleLogin(
                         db = db,
-                        modifier = Modifier.align(Alignment.Center),
-                        onSuccess = {
-                            startActivity(Intent(this, MainMenuActivity::class.java))
+                        onSuccess = { ctx ->
+                            ctx.startActivity(Intent(ctx, MainMenuActivity::class.java))
                             finish()
-                        }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(16.dp)
                     )
                 }
             }
@@ -68,17 +56,16 @@ class LoginActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginCard(
+fun SimpleLogin(
     db: DatabaseHelper,
-    modifier: Modifier = Modifier,
-    onSuccess: () -> Unit
+    onSuccess: (ctx: android.content.Context) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var username by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var user by rememberSaveable { mutableStateOf("") }
+    var pass by rememberSaveable { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
     val ctx = LocalContext.current
 
-    // Textos de recurso
     val usrLabel  = stringResource(R.string.username)
     val pwdLabel  = stringResource(R.string.password)
     val btnLogin  = stringResource(R.string.login)
@@ -89,99 +76,79 @@ fun LoginCard(
     val errText   = stringResource(R.string.login_error)
 
     Card(
-        modifier = modifier
-            .width(320.dp)
-            .padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
+        modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column(
-            modifier = Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo/Icono de zoológico
-            Icon(
-                imageVector = Icons.Filled.Pets,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(72.dp)
-            )
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.welcome_login),
-                style = MaterialTheme.typography.headlineSmall
-            )
-            Text(
-                text = stringResource(R.string.login_message),
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Box(
+                modifier = Modifier
+                    .size(72.dp)
+                    .background(JungleGreen, shape = CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Pets,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
             Spacer(Modifier.height(16.dp))
-
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = user,
+                onValueChange = { user = it },
                 label = { Text(usrLabel) },
-                leadingIcon = { Icon(Icons.Filled.Person, contentDescription = null) },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(12.dp))
-
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = pass,
+                onValueChange = { pass = it },
                 label = { Text(pwdLabel) },
-                leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(24.dp))
-
             Button(
                 onClick = {
                     showError = false
                     when {
-                        !username.matches(Regex("^[A-Za-z0-9]+$")) -> {
+                        user.isBlank() -> {
                             Toast.makeText(ctx, errUser, Toast.LENGTH_SHORT).show()
                             showError = true
                         }
-                        password.isBlank() -> {
+                        pass.isBlank() -> {
                             Toast.makeText(ctx, errPass, Toast.LENGTH_SHORT).show()
                             showError = true
                         }
-                        !db.validateUser(username, password) -> {
+                        !db.validateUser(user, pass) -> {
                             Toast.makeText(ctx, errLogin, Toast.LENGTH_SHORT).show()
                             showError = true
                         }
-                        else -> onSuccess()
+                        else -> onSuccess(ctx)
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(12.dp)
+                    .height(48.dp)
             ) {
                 Text(btnLogin)
             }
-
             Spacer(Modifier.height(8.dp))
-
             TextButton(onClick = {
-                ctx.startActivity(
-                    Intent(ctx, ForgotPasswordActivity::class.java)
-                )
+                ctx.startActivity(Intent(ctx, ForgotPasswordActivity::class.java))
             }) {
                 Text(btnForgot)
             }
-
             if (showError) {
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    text = errText,
-                    color = MaterialTheme.colorScheme.error
-                )
+                Text(errText, color = MaterialTheme.colorScheme.error)
             }
         }
     }
@@ -189,21 +156,18 @@ fun LoginCard(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview() {
-    val ctx = LocalContext.current
-    val db = DatabaseHelper(ctx)
+fun PreviewSimpleLogin() {
+    val db = DatabaseHelper(LocalContext.current)
     ProyectozooTheme {
         Box(
-            modifier = Modifier
+            Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(listOf(JungleGreen, EarthBrown))
-                )
+                .background(Brush.verticalGradient(listOf(JungleGreen, EarthBrown)))
         ) {
-            LoginCard(
+            SimpleLogin(
                 db = db,
-                modifier = Modifier.align(Alignment.Center),
-                onSuccess = {}
+                onSuccess = {},
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }

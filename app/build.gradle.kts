@@ -40,6 +40,12 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
+
+    // Android core + Lifecycle
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
