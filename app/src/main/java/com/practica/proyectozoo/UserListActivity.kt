@@ -10,10 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -32,6 +29,11 @@ class UserListActivity : ComponentActivity() {
             ProyectozooTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { Text(stringResource(R.string.users)) }
+                        )
+                    },
                     floatingActionButton = {
                         val context = LocalContext.current
                         FloatingActionButton(
@@ -67,17 +69,28 @@ fun UserListScreen(
 ) {
     val context = LocalContext.current
     val usuarios = remember { mutableStateListOf<Usuario>() }
+    var search by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         usuarios.clear()
         usuarios.addAll(db.getAllUsuariosDetail())
     }
 
-    LazyColumn(
-        modifier = modifier.padding(8.dp)
-    ) {
+    Column(modifier = modifier.padding(8.dp)) {
+        OutlinedTextField(
+            value = search,
+            onValueChange = { search = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(stringResource(R.string.search_hint)) }
+        )
+        Spacer(Modifier.height(8.dp))
+
+        LazyColumn {
         items(
-            items = usuarios,
+            items = usuarios.filter {
+                it.username.contains(search, ignoreCase = true) ||
+                    it.email.contains(search, ignoreCase = true)
+            },
             key = { it.id }
         ) { user ->
             Row(
