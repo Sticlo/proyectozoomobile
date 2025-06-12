@@ -29,6 +29,8 @@ import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.ForgotPasswordActivity
 import com.practica.proyectozoo.MainMenuActivity
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
+import com.practica.proyectozoo.ui.theme.JungleGreen
+import com.practica.proyectozoo.ui.theme.EarthBrown
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,15 +39,15 @@ class LoginActivity : ComponentActivity() {
 
         setContent {
             ProyectozooTheme {
-                // Fondo degradado con tus colores primario/secondary
+                // Fondo degradado personalizado para dar un aspecto más natural
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
                                 colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
+                                    JungleGreen,
+                                    EarthBrown
                                 )
                             )
                         )
@@ -104,7 +106,16 @@ fun LoginCard(
                 imageVector = Icons.Filled.Pets,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(72.dp)
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = stringResource(R.string.welcome_login),
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Text(
+                text = stringResource(R.string.login_message),
+                style = MaterialTheme.typography.bodyMedium
             )
             Spacer(Modifier.height(16.dp))
 
@@ -185,9 +196,15 @@ fun LoginPreview() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(
+                    Brush.verticalGradient(listOf(JungleGreen, EarthBrown))
+                )
         ) {
-            LoginCard(db = db, modifier = Modifier.align(Alignment.Center), onSuccess = {})
+            LoginCard(
+                db = db,
+                modifier = Modifier.align(Alignment.Center),
+                onSuccess = {}
+            )
         }
     }
 }
