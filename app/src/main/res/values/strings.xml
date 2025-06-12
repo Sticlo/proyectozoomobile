@@ -26,6 +26,9 @@
     <string name="delete">Eliminar</string>
     <string name="save">Guardar</string>
     <string name="perfil_id">ID Perfil</string>
+    <string name="users">Usuarios</string>
+    <string name="search_hint">Buscar...</string>
+    <string name="edit_user_title">Editar usuario</string>
     <string name="add_especie">Agregar especie</string>
     <string name="add_zoo">Agregar zoo</string>
     <string name="nombre">Nombre</string>
