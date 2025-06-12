@@ -5,8 +5,6 @@
     <string name="password">Contraseña</string>
     <string name="login_error">Usuario o contraseña incorrectos</string>
     <string name="invalid_login">Datos de acceso inválidos</string>
-    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
-    <string name="email">Correo electrónico</string>
     <string name="invalid_email">Correo electrónico inválido</string>
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="email">Correo electrónico</string>

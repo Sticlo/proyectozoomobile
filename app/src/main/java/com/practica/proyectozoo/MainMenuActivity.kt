@@ -13,10 +13,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.LocalContext
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
+
+// IMPORTS QUE FALTABAN:
+import com.practica.proyectozoo.UserListActivity
+import com.practica.proyectozoo.ZooListActivity
+import com.practica.proyectozoo.EspecieListActivity
+import com.practica.proyectozoo.AnimalListActivity
 
 class MainMenuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,23 +40,38 @@ class MainMenuActivity : ComponentActivity() {
 @Composable
 fun MainMenuScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Button(onClick = { context.startActivity(Intent(context, UserListActivity::class.java)) }, modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Button(
+            onClick = { context.startActivity(Intent(context, UserListActivity::class.java)) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Icon(Icons.Default.List, contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text(text = "Usuarios")
         }
-        Button(onClick = { context.startActivity(Intent(context, ZooListActivity::class.java)) }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { context.startActivity(Intent(context, ZooListActivity::class.java)) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Icon(Icons.Default.List, contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text(text = "Zoos")
         }
-        Button(onClick = { context.startActivity(Intent(context, EspecieListActivity::class.java)) }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { context.startActivity(Intent(context, EspecieListActivity::class.java)) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Icon(Icons.Default.List, contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text(text = "Especies")
         }
-        Button(onClick = { context.startActivity(Intent(context, AnimalListActivity::class.java)) }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { context.startActivity(Intent(context, AnimalListActivity::class.java)) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Icon(Icons.Default.List, contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text(text = "Animales")
