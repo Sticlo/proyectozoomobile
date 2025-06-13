@@ -32,7 +32,6 @@ import com.practica.proyectozoo.data.Usuario
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import androidx.compose.ui.graphics.vector.ImageVector
 
 
 class UserListActivity : ComponentActivity() {
@@ -169,34 +168,6 @@ fun UserListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun StatCard(
-    title: String,
-    value: String,
-    icon: ImageVector,
-    color: Color,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = color)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text(title, fontSize = 14.sp, color = Color.DarkGray)
-                Text(value, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            }
-            Icon(icon, contentDescription = null, tint = Color.Black)
-        }
-    }
-}
 
 @Composable
 fun DropdownMenuUserItem(user: Usuario, db: DatabaseHelper, usuarios: MutableList<Usuario>) {
