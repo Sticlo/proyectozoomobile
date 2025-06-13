@@ -28,6 +28,22 @@
     <string name="perfil_id">ID Perfil</string>
     <string name="users">Usuarios</string>
     <string name="search_hint">Buscar...</string>
+    <string name="search">Buscar</string>
+    <string name="user_not_found">Usuario no encontrado</string>
+    <string name="user_deleted">Usuario eliminado</string>
+    <string name="clear_form">Limpiar</string>
+    <string name="user_already_exists">El usuario ya existe</string>
+    <string name="id">ID</string>
+    <string name="edit_especie">Editar especie</string>
+    <string name="especie_deleted">Especie eliminada correctamente</string>
+    <string name="especie_not_found">Especie no encontrada</string>
+    <string name="invalid_id">ID inválido</string>
+
+    <string name="zoos">Zoos</string>
+    <string name="species">Especies</string>
+    <string name="animals">Animales</string>
+
+
     <string name="edit_user_title">Editar usuario</string>
     <string name="add_especie">Agregar especie</string>
     <string name="add_zoo">Agregar zoo</string>
