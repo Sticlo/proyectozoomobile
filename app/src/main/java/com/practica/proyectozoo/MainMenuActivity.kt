@@ -1,7 +1,9 @@
 package com.practica.proyectozoo
 
+import com.practica.proyectozoo.data.MenuItemData
 import android.content.Intent
 import android.os.Bundle
+import com.practica.proyectozoo.ui.components.MenuCard
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -121,57 +123,12 @@ fun MainMenuScreen() {
             modifier = Modifier.padding(top = 12.dp)
         )
     }
-}
 
-@Composable
-fun MenuCard(item: MenuItemData) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp)
-            .clickable(onClick = item.onClick),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = item.backgroundColor),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(Color.White, shape = RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = item.icon,
-                    contentDescription = null,
-                    tint = item.iconColor
-                )
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = item.title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF0F172A)
-                )
-                Text(
-                    text = item.description,
-                    fontSize = 14.sp,
-                    color = Color(0xFF64748B)
-                )
-            }
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = Color(0xFF64748B)
-            )
-        }
+    menuItems.forEach { item ->
+        MenuCard(item)
     }
 }
+
 
 data class MenuItemData(
     val title: String,
