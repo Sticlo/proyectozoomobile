@@ -20,6 +20,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 id_pais INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre VARCHAR(100) NOT NULL UNIQUE
             );
+            
+            
         """)
         db.execSQL("""
             CREATE TABLE ciudades (
@@ -29,6 +31,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 UNIQUE(nombre, id_pais)
             );
         """)
+
+        db.execSQL("INSERT INTO paises(nombre) VALUES('Colombia');")
+
+        db.execSQL("""
+    INSERT INTO ciudades(nombre, id_pais) VALUES
+      ('Bogotá',      1),
+      ('Medellín',    1),
+      ('Cali',        1),
+      ('Barranquilla',1),
+      ('Cartagena',   1),
+      ('Cúcuta',      1),
+      ('Bucaramanga', 1);
+""".trimIndent())
+
         db.execSQL("""
             CREATE TABLE zoos (
                 id_zoo INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -324,6 +340,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
     companion object {
         private const val DATABASE_NAME = "zoo_db.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
     }
+
+    fun getAllCiudades(): List<Pair<Int, String>> {
+        val list = mutableListOf<Pair<Int, String>>()
+        readableDatabase.rawQuery(
+            "SELECT id_ciudad, nombre FROM ciudades ORDER BY nombre", null
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                list += cursor.getInt(0) to cursor.getString(1)
+            }
+        }
+        return list
+    }
+
 }

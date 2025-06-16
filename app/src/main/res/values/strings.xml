@@ -65,4 +65,8 @@
     <string name="invalid_nombre_cientifico">Debes ingresar el nombre científico</string>
     <string name="especie_saved">Especie guardada correctamente</string>
     <string name="especie_updated">Especie actualizada correctamente</string>
+    <string name="edit_zoo">Editar zoológico</string>
+    <string name="zoo_not_found">Zoológico no encontrado</string>
+    <string name="zoo_deleted">Zoológico eliminado</string>
+    <string name="ciudad">Ciudad</string>
 </resources>
