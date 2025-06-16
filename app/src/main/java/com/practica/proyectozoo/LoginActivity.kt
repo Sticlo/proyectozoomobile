@@ -1,5 +1,6 @@
 package com.practica.proyectozoo
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -41,9 +42,16 @@ class LoginActivity : ComponentActivity() {
                     // Formulario en el centro
                     SimpleLogin(
                         db = db,
-                        onSuccess = { ctx, perfil ->
-                            if (perfil == 1) ctx.startActivity(Intent(ctx, MainMenuActivity::class.java))
-                            else ctx.startActivity(Intent(ctx, UserMenuActivity::class.java))
+                        onSuccess = { ctx, perfil, username, password ->
+                            // Guardamos la sesión
+                            ctx.getSharedPreferences("session", Context.MODE_PRIVATE)
+                                .edit()
+                                .putString("username", username)
+                                .putString("password", password)
+                                .apply()
+                            // Navegamos según rol
+                            val intent = Intent(ctx, MainMenuActivity::class.java)
+                            startActivity(intent)
                             finish()
                         },
                         modifier = Modifier
@@ -59,7 +67,7 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun SimpleLogin(
     db: DatabaseHelper,
-    onSuccess: (ctx: android.content.Context, perfil: Int) -> Unit,
+    onSuccess: (ctx: Context, perfil: Int, username: String, password: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var user by rememberSaveable { mutableStateOf("") }
@@ -134,7 +142,7 @@ fun SimpleLogin(
                         }
                         else -> {
                             val perfil = db.getPerfilId(user, pass) ?: 1
-                            onSuccess(ctx, perfil)
+                            onSuccess(ctx, perfil, user, pass)
                         }
                     }
                 },
@@ -175,7 +183,7 @@ fun PreviewSimpleLogin() {
         ) {
             SimpleLogin(
                 db = db,
-                onSuccess = { _, _ -> },
+                onSuccess = { _, _, _, _ -> },
                 modifier = Modifier.align(Alignment.Center),
             )
         }
