@@ -31,7 +31,9 @@
         <activity android:name=".ZooEditActivity" />
         <activity android:name=".EspecieEditActivity" />
         <activity android:name=".MainMenuActivity" />
+        <activity android:name=".UserMenuActivity" />
         <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".RegisterActivity" />
     </application>
 
 </manifest>

@@ -92,7 +92,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         """)
         // Datos iniciales para prueba
         db.execSQL("INSERT INTO perfiles(nombre_perfil) VALUES('admin');")
+        db.execSQL("INSERT INTO perfiles(nombre_perfil) VALUES('usuario');")
         db.execSQL("INSERT INTO usuarios(username,email,password_hash,id_perfil) VALUES('admin','admin@example.com','admin',1);")
+        db.execSQL("INSERT INTO usuarios(username,email,password_hash,id_perfil) VALUES('user','user@example.com','user',2);")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -112,6 +114,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             arrayOf(username, password)
         ).use { cursor ->
             return cursor.moveToFirst()
+        }
+    }
+
+    fun getPerfilId(username: String, password: String): Int? {
+        readableDatabase.rawQuery(
+            "SELECT id_perfil FROM usuarios WHERE username=? AND password_hash=?",
+            arrayOf(username, password)
+        ).use { cursor ->
+            return if (cursor.moveToFirst()) cursor.getInt(0) else null
         }
     }
 

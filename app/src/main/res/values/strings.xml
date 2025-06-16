@@ -69,4 +69,8 @@
     <string name="zoo_not_found">Zoológico no encontrado</string>
     <string name="zoo_deleted">Zoológico eliminado</string>
     <string name="ciudad">Ciudad</string>
+    <string name="register">Registrarse</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="password_mismatch">Las contraseñas no coinciden</string>
+    <string name="registration_success">Registro exitoso</string>
 </resources>
