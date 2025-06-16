@@ -41,8 +41,9 @@ class LoginActivity : ComponentActivity() {
                     // Formulario en el centro
                     SimpleLogin(
                         db = db,
-                        onSuccess = { ctx ->
-                            ctx.startActivity(Intent(ctx, MainMenuActivity::class.java))
+                        onSuccess = { ctx, perfil ->
+                            if (perfil == 1) ctx.startActivity(Intent(ctx, MainMenuActivity::class.java))
+                            else ctx.startActivity(Intent(ctx, UserMenuActivity::class.java))
                             finish()
                         },
                         modifier = Modifier
@@ -58,7 +59,7 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun SimpleLogin(
     db: DatabaseHelper,
-    onSuccess: (ctx: android.content.Context) -> Unit,
+    onSuccess: (ctx: android.content.Context, perfil: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var user by rememberSaveable { mutableStateOf("") }
@@ -131,7 +132,10 @@ fun SimpleLogin(
                             Toast.makeText(ctx, errLogin, Toast.LENGTH_SHORT).show()
                             showError = true
                         }
-                        else -> onSuccess(ctx)
+                        else -> {
+                            val perfil = db.getPerfilId(user, pass) ?: 1
+                            onSuccess(ctx, perfil)
+                        }
                     }
                 },
                 modifier = Modifier
@@ -145,6 +149,11 @@ fun SimpleLogin(
                 ctx.startActivity(Intent(ctx, ForgotPasswordActivity::class.java))
             }) {
                 Text(btnForgot)
+            }
+            TextButton(onClick = {
+                ctx.startActivity(Intent(ctx, RegisterActivity::class.java))
+            }) {
+                Text(stringResource(R.string.register))
             }
             if (showError) {
                 Spacer(Modifier.height(8.dp))
@@ -166,8 +175,8 @@ fun PreviewSimpleLogin() {
         ) {
             SimpleLogin(
                 db = db,
-                onSuccess = {},
-                modifier = Modifier.align(Alignment.Center)
+                onSuccess = { _, _ -> },
+                modifier = Modifier.align(Alignment.Center),
             )
         }
     }
