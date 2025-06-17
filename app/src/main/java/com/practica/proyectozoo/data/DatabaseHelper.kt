@@ -10,10 +10,11 @@ import com.practica.proyectozoo.data.Zoo
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
-    DATABASE_NAME,  
+    DATABASE_NAME,
     null,
     DATABASE_VERSION
 ) {
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("""
             CREATE TABLE paises (
@@ -165,6 +166,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         }
         return list
     }
+
     fun getPasswordByEmail(email: String): String? {
         readableDatabase.rawQuery(
             "SELECT password_hash FROM usuarios WHERE email=?",
