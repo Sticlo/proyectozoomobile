@@ -95,20 +95,14 @@ fun UserListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
         usuarios.addAll(db.getAllUsuariosDetail())
     }
 
-    Column(modifier.padding(16.dp)) {
+    Column(modifier = modifier.padding(16.dp)) {
         Text("Administra los usuarios de tu sistema", fontSize = 14.sp, color = Color.Gray)
         Spacer(Modifier.height(16.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StatCard("Total Usuarios", usuarios.size.toString(), Icons.Default.People, Color(0xFFD1FAE5))
-            StatCard(
-                "Activos",
-                usuarios.count { it.perfilId == 1 }.toString(),
-                Icons.Default.CheckCircle,
-                Color(0xFFE0F2FE)
-            )
+            StatCard("Activos", usuarios.count { it.perfilId == 1 }.toString(), Icons.Default.CheckCircle, Color(0xFFE0F2FE))
         }
-
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
@@ -118,14 +112,24 @@ fun UserListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(Modifier.height(16.dp))
 
-        Card(modifier = Modifier.fillMaxSize(), shape = RoundedCornerShape(12.dp)) {
-            LazyColumn(modifier = Modifier.padding(8.dp)) {
+        // Aquí reemplazamos `fillMaxSize()` por weight(1f)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),         // <-- ocupa sólo el espacio que quede
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()   // ahora sí puede llenar el card
+                    .padding(8.dp)
+            ) {
                 items(
                     items = usuarios.filter {
-                        it.username.contains(search, true) || it.email.contains(search, true)
+                        it.username.contains(search, true) ||
+                                it.email.contains(search, true)
                     },
                     key = { it.id }
                 ) { user ->

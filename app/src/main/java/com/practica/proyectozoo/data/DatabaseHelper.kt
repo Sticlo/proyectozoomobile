@@ -10,7 +10,7 @@ import com.practica.proyectozoo.data.Zoo
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
-    DATABASE_NAME,
+    DATABASE_NAME,  
     null,
     DATABASE_VERSION
 ) {
@@ -351,13 +351,25 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
     companion object {
         private const val DATABASE_NAME = "zoo_db.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
     }
 
     fun getAllCiudades(): List<Pair<Int, String>> {
         val list = mutableListOf<Pair<Int, String>>()
         readableDatabase.rawQuery(
             "SELECT id_ciudad, nombre FROM ciudades ORDER BY nombre", null
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                list += cursor.getInt(0) to cursor.getString(1)
+            }
+        }
+        return list
+    }
+    fun getAllPerfiles(): List<Pair<Int,String>> {
+        val list = mutableListOf<Pair<Int,String>>()
+        readableDatabase.rawQuery(
+            "SELECT id_perfil, nombre_perfil FROM perfiles ORDER BY id_perfil",
+            null
         ).use { cursor ->
             while (cursor.moveToNext()) {
                 list += cursor.getInt(0) to cursor.getString(1)

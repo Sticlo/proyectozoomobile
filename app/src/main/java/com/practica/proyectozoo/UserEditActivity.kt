@@ -1,9 +1,7 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.practica.proyectozoo
 
+import android.os.Bundle
 import android.util.Patterns
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -29,17 +27,16 @@ import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.data.Usuario
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 class UserEditActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = DatabaseHelper(this)
         setContent {
             ProyectozooTheme {
                 Scaffold(
                     topBar = {
-                        TopAppBar(
-                            title = { Text(stringResource(R.string.add_user)) }
-                        )
+                        TopAppBar(title = { Text(stringResource(R.string.add_user)) })
                     }
                 ) { padding ->
                     Box(
@@ -56,7 +53,12 @@ class UserEditActivity : ComponentActivity() {
                             .padding(padding),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        UserEditForm(db = db, modifier = Modifier.padding(top = 24.dp))
+                        UserEditForm(
+                            db = db,
+                            modifier = Modifier.padding(top = 24.dp)
+                        ) {
+                            finish()
+                        }
                     }
                 }
             }
@@ -68,34 +70,42 @@ class UserEditActivity : ComponentActivity() {
 @Composable
 fun UserEditForm(
     db: DatabaseHelper,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDone: () -> Unit
 ) {
     val ctx = LocalContext.current
 
-    // Estados
+    // 1) Campos y estado
     var idField     by rememberSaveable { mutableStateOf("") }
     var currentUser by rememberSaveable { mutableStateOf<Usuario?>(null) }
     var username    by rememberSaveable { mutableStateOf("") }
     var email       by rememberSaveable { mutableStateOf("") }
     var password    by rememberSaveable { mutableStateOf("") }
-    var perfilId    by rememberSaveable { mutableStateOf("") }
-    var statusMsg   by remember { mutableStateOf<String?>(null) }
 
-    // Cadenas pre-capturadas
-    val usrLabel     = stringResource(R.string.username)
-    val emailLabel   = stringResource(R.string.email)
-    val pwdLabel     = stringResource(R.string.password)
-    val perfLabel    = stringResource(R.string.perfil_id)
-    val btnSearch    = stringResource(R.string.search)
-    val btnSave      = stringResource(R.string.save)
-    val btnDelete    = stringResource(R.string.delete)
-    val errUser      = stringResource(R.string.invalid_username)
-    val errEmail     = stringResource(R.string.invalid_email)
-    val errPwd       = stringResource(R.string.invalid_password)
-    val errPerf      = stringResource(R.string.invalid_perfil_id)
-    val msgNotFound  = stringResource(R.string.user_not_found)
-    val msgDeleted   = stringResource(R.string.user_deleted)
-    val msgSaved     = stringResource(R.string.user_saved)
+    // 2) Cargar perfiles
+    val perfiles = remember { db.getAllPerfiles() }
+    var selectedPerfil by rememberSaveable {
+        mutableStateOf(perfiles.firstOrNull()?.first ?: 2)
+    }
+    var dropdownExpanded by remember { mutableStateOf(false) }
+
+    var statusMsg by remember { mutableStateOf<String?>(null) }
+
+    // 3) Textos
+    val usrLabel    = stringResource(R.string.username)
+    val emailLabel  = stringResource(R.string.email)
+    val pwdLabel    = stringResource(R.string.password)
+    val perfLabel   = stringResource(R.string.perfil_id)
+    val btnSearch   = stringResource(R.string.search)
+    val btnSave     = stringResource(R.string.save)
+    val btnDelete   = stringResource(R.string.delete)
+    val errUser     = stringResource(R.string.invalid_username)
+    val errEmail    = stringResource(R.string.invalid_email)
+    val errPwd      = stringResource(R.string.invalid_password)
+    val errPerf     = stringResource(R.string.invalid_perfil_id)
+    val msgNotFound = stringResource(R.string.user_not_found)
+    val msgDeleted  = stringResource(R.string.user_deleted)
+    val msgSaved    = stringResource(R.string.user_saved)
 
     Column(
         modifier = modifier
@@ -103,7 +113,7 @@ fun UserEditForm(
             .wrapContentHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Buscar por ID
+        // Búsqueda por ID
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -112,38 +122,36 @@ fun UserEditForm(
                 value = idField,
                 onValueChange = { idField = it },
                 label = { Text(perfLabel) },
+                leadingIcon = { Icon(Icons.Default.Tag, contentDescription = null) },
                 singleLine = true,
-                modifier = Modifier.weight(1f),
-                leadingIcon = { Icon(Icons.Default.Tag, contentDescription = null) }
+                modifier = Modifier.weight(1f)
             )
-            Button(
-                onClick = {
-                    val id = idField.toIntOrNull()
-                    if (id == null) {
-                        statusMsg = errPerf
+            Button(onClick = {
+                val id = idField.toIntOrNull()
+                if (id == null) {
+                    statusMsg = errPerf
+                    currentUser = null
+                } else {
+                    db.getUsuario(id)?.let { u ->
+                        currentUser = u
+                        username = u.username
+                        email    = u.email
+                        password = u.password
+                        selectedPerfil = u.perfilId
+                        statusMsg = null
+                    } ?: run {
                         currentUser = null
-                    } else {
-                        db.getUsuario(id)?.let { u ->
-                            currentUser = u
-                            username = u.username
-                            email    = u.email
-                            password = u.password
-                            perfilId = u.perfilId.toString()
-                            statusMsg = null
-                        } ?: run {
-                            currentUser = null
-                            statusMsg = msgNotFound
-                        }
+                        statusMsg = msgNotFound
                     }
                 }
-            ) {
+            }) {
                 Text(btnSearch)
             }
         }
 
         Spacer(Modifier.height(16.dp))
 
-        // Formulario
+        // Campos de usuario, correo y contraseña
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
@@ -171,43 +179,74 @@ fun UserEditForm(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = perfilId,
-            onValueChange = { perfilId = it },
-            label = { Text(perfLabel) },
-            leadingIcon = { Icon(Icons.Default.Tag, contentDescription = null) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
+
+        // Desplegable de perfiles dinámico
+        ExposedDropdownMenuBox(
+            expanded = dropdownExpanded,
+            onExpandedChange = { dropdownExpanded = !dropdownExpanded }
+        ) {
+            val selectedLabel = perfiles
+                .firstOrNull { it.first == selectedPerfil }
+                ?.second
+                .orEmpty()
+
+            OutlinedTextField(
+                value = selectedLabel,
+                onValueChange = { /* no-op */ },
+                readOnly = true,                                  // evita el “Select all”
+                label = { Text(perfLabel) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropdownExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()                                // importante para anclar el menú
+            )
+            ExposedDropdownMenu(
+                expanded = dropdownExpanded,
+                onDismissRequest = { dropdownExpanded = false }
+            ) {
+                perfiles.forEach { (id, nombre) ->
+                    DropdownMenuItem(
+                        text = { Text(nombre) },
+                        onClick = {
+                            selectedPerfil = id
+                            dropdownExpanded = false
+                        }
+                    )
+                }
+            }
+        }
 
         Spacer(Modifier.height(16.dp))
 
-        // Botones Guardar / Eliminar
+        // Guardar / Eliminar
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Botón Guardar (Crear o Actualizar)
             Button(
                 onClick = {
                     statusMsg = when {
                         !username.matches(Regex("^[A-Za-z0-9]+$"))      -> errUser
                         !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> errEmail
                         password.isBlank()                                -> errPwd
-                        perfilId.toIntOrNull() == null                    -> errPerf
+                        selectedPerfil !in perfiles.map { it.first }      -> errPerf
                         else -> {
-                            val pid = perfilId.toInt()
                             if (currentUser == null) {
-                                db.insertUsuario(username, email, password, pid)
-                                statusMsg = msgSaved
+                                db.insertUsuario(username, email, password, selectedPerfil)
                             } else {
-                                db.updateUsuario(currentUser!!.id, username, email, password, pid)
-                                statusMsg = msgSaved
+                                db.updateUsuario(currentUser!!.id, username, email, password, selectedPerfil)
                             }
-                            // limpiar tras guardar
-                            idField = ""; username = ""; email = ""; password = ""; perfilId = ""
+                            // limpiar
+                            idField = ""
+                            username = ""
+                            email = ""
+                            password = ""
+                            selectedPerfil = perfiles.firstOrNull()?.first ?: 2
                             currentUser = null
-                            statusMsg
+                            msgSaved
                         }
                     }
                 },
@@ -215,13 +254,16 @@ fun UserEditForm(
             ) {
                 Text(btnSave)
             }
-            // Botón Eliminar
             Button(
                 onClick = {
                     currentUser?.let {
                         db.deleteUsuario(it.id)
                         statusMsg = msgDeleted
-                        idField = ""; username = ""; email = ""; password = ""; perfilId = ""
+                        idField = ""
+                        username = ""
+                        email = ""
+                        password = ""
+                        selectedPerfil = perfiles.firstOrNull()?.first ?: 2
                         currentUser = null
                     } ?: run {
                         statusMsg = msgNotFound
@@ -236,24 +278,28 @@ fun UserEditForm(
                 Text(btnDelete)
             }
         }
+
         Spacer(Modifier.height(8.dp))
-        Button(
-            onClick = {
-                idField = ""; username = ""; email = ""; password = ""; perfilId = ""
-                currentUser = null
-                statusMsg = null
-            }
-        ) {
+        Button(onClick = {
+            idField = ""
+            username = ""
+            email = ""
+            password = ""
+            selectedPerfil = perfiles.firstOrNull()?.first ?: 2
+            currentUser = null
+            statusMsg = null
+        }) {
             Text(stringResource(R.string.clear_form))
         }
 
-        // Mensaje de estado o error
         statusMsg?.let { msg ->
             Spacer(Modifier.height(12.dp))
             Text(
                 text = msg,
-                color = if (msg == msgSaved) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.error
+                color = if (msg == msgSaved)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.error
             )
         }
     }
@@ -264,6 +310,6 @@ fun UserEditForm(
 fun UserEditPreview() {
     val db = DatabaseHelper(LocalContext.current)
     ProyectozooTheme {
-        UserEditForm(db = db)
+        UserEditForm(db = db) {}
     }
 }
