@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper
 import com.practica.proyectozoo.data.Usuario
 import com.practica.proyectozoo.data.Especie
 import com.practica.proyectozoo.data.Zoo
+import android.content.ContentValues
+import com.practica.proyectozoo.data.Animal
+
 
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(
@@ -65,7 +68,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
             );
         """)
         db.execSQL("""
-            CREATE TABLE animales (
+            CREATE TABLE animales (     
                 id_animal INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_zoo INTEGER NOT NULL REFERENCES zoos(id_zoo) ON UPDATE CASCADE ON DELETE CASCADE,
                 id_especie INTEGER NOT NULL REFERENCES especies(id_especie) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -108,6 +111,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.execSQL("DROP TABLE IF EXISTS paises")
         onCreate(db)
     }
+    override fun onConfigure(db: SQLiteDatabase) {
+        super.onConfigure(db)
+        db.setForeignKeyConstraintsEnabled(true)
+    }
+
 
     fun validateUser(username: String, password: String): Boolean {
         readableDatabase.rawQuery(
@@ -157,15 +165,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         return list
     }
 
-    fun getAnimales(): List<String> {
-        val list = mutableListOf<String>()
-        readableDatabase.rawQuery("SELECT id_animal || '-' || sexo FROM animales", null).use { cursor ->
-            while (cursor.moveToNext()) {
-                list.add(cursor.getString(0))
-            }
-        }
-        return list
-    }
 
     fun getPasswordByEmail(email: String): String? {
         readableDatabase.rawQuery(
@@ -379,5 +378,108 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         }
         return list
     }
+    fun insertAnimal(
+        zooId: Int,
+        especieId: Int,
+        sexo: Char,
+        anioNacimiento: Int?,
+        paisOrigen: String?,
+        continente: String?
+    ) {
+        val cv = ContentValues().apply {
+            put("id_zoo", zooId)
+            put("id_especie", especieId)
+            put("sexo", sexo.toString())
+            put("anio_nacimiento", anioNacimiento)
+            put("pais_origen", paisOrigen)
+            put("continente", continente)
+        }
+        writableDatabase.insert("animales", null, cv)
+    }
+
+    fun getAnimales(): List<String> {
+        val list = mutableListOf<String>()
+        readableDatabase.rawQuery(
+            "SELECT id_animal || '-' || sexo FROM animales", null
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(cursor.getString(0))
+            }
+        }
+        return list
+    }
+
+    fun getAllAnimalesDetail(): List<Animal> {
+        val list = mutableListOf<Animal>()
+        readableDatabase.rawQuery("""
+        SELECT id_animal, id_zoo, id_especie, sexo,
+               anio_nacimiento, pais_origen, continente
+        FROM animales
+    """, null).use { c ->
+            while (c.moveToNext()) {
+                list += Animal(
+                    idAnimal       = c.getInt(0),
+                    idZoo          = c.getInt(1),
+                    idEspecie      = c.getInt(2),
+                    sexo           = c.getString(3)[0],
+                    anioNacimiento = c.getInt(4).takeIf { !c.isNull(4) },
+                    paisOrigen     = c.getString(5),
+                    continente     = c.getString(6)
+                )
+            }
+        }
+        return list
+    }
+
+    fun getAnimal(id: Int): Animal? {
+        readableDatabase.rawQuery("""
+        SELECT id_animal, id_zoo, id_especie, sexo,
+               anio_nacimiento, pais_origen, continente
+        FROM animales
+        WHERE id_animal=?
+    """, arrayOf(id.toString())).use { c ->
+            return if (c.moveToFirst()) {
+                Animal(
+                    idAnimal       = c.getInt(0),
+                    idZoo          = c.getInt(1),
+                    idEspecie      = c.getInt(2),
+                    sexo           = c.getString(3)[0],
+                    anioNacimiento = c.getInt(4).takeIf { !c.isNull(4) },
+                    paisOrigen     = c.getString(5),
+                    continente     = c.getString(6)
+                )
+            } else null
+        }
+    }
+
+    fun updateAnimal(
+        id: Int,
+        zooId: Int,
+        especieId: Int,
+        sexo: Char,
+        anioNacimiento: Int?,
+        paisOrigen: String?,
+        continente: String?
+    ) {
+        val cv = ContentValues().apply {
+            put("id_zoo", zooId)
+            put("id_especie", especieId)
+            put("sexo", sexo.toString())
+            put("anio_nacimiento", anioNacimiento)
+            put("pais_origen", paisOrigen)
+            put("continente", continente)
+        }
+        writableDatabase.update(
+            "animales",
+            cv,
+            "id_animal=?",
+            arrayOf(id.toString())
+        )
+    }
+
+    fun deleteAnimal(id: Int) {
+        writableDatabase.delete("animales", "id_animal=?", arrayOf(id.toString()))
+    }
+
 
 }
