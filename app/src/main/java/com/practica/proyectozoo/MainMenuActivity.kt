@@ -110,23 +110,19 @@ fun MainMenuScreen(isAdmin: Boolean) {
             ))
         }
 
-        // Animales queda comentado hasta implementar su pantalla:
-        /*
-        add(MenuItemData(
-          title           = "Animales",
-          description     = if (isAdmin) "Registro y seguimiento de animales" else "Agregar nuevo animal",
-          icon            = Icons.Default.Pets,
-          backgroundColor = Color(0xFFFCE7F3),
-          iconColor       = Color(0xFFEC4899),
-          onClick         = {
-            val dest = if (isAdmin)
-              AnimalListActivity::class.java
-            else
-              AnimalEditActivity::class.java
-            ctx.startActivity(Intent(ctx, dest))
-          }
-        ))
-        */
+        add(
+            MenuItemData(
+                title = "Animales",
+                description = if (isAdmin) "Registro y seguimiento de animales" else "Agregar nuevo animal",
+                icon = Icons.Default.Pets,
+                backgroundColor = Color(0xFFFCE7F3),
+                iconColor = Color(0xFFEC4899),
+                onClick = {
+                    val dest = if (isAdmin) AnimalListActivity::class.java else AnimalEditActivity::class.java
+                    ctx.startActivity(Intent(ctx, dest))
+                }
+            )
+        )
     }
 
     // 3) UI Compose
