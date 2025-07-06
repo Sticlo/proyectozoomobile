@@ -5,5 +5,6 @@ data class Usuario(
     val username: String,
     val email: String,
     val password: String,
-    val perfilId: Int
+    val perfilId: Int,
+    val fechaRegistro: String? = null
 )

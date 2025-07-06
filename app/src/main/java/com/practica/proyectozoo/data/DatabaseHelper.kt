@@ -192,7 +192,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     fun getAllUsuariosDetail(): List<Usuario> {
         val list = mutableListOf<Usuario>()
         readableDatabase.rawQuery(
-            "SELECT id_usuario, username, email, password_hash, id_perfil FROM usuarios",
+            "SELECT id_usuario, username, email, password_hash, id_perfil, fecha_registro FROM usuarios",
             null
         ).use { cursor ->
             while (cursor.moveToNext()) {
@@ -202,7 +202,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
-                        cursor.getInt(4)
+                        cursor.getInt(4),
+                        cursor.getString(5)
                     )
                 )
             }
@@ -212,13 +213,49 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     fun getUsuario(id: Int): Usuario? {
         readableDatabase.rawQuery(
-            "SELECT id_usuario, username, email, password_hash, id_perfil FROM usuarios WHERE id_usuario=?",
+            "SELECT id_usuario, username, email, password_hash, id_perfil, fecha_registro FROM usuarios WHERE id_usuario=?",
             arrayOf(id.toString())
         ).use { c ->
             return if (c.moveToFirst()) {
-                Usuario(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4))
+                Usuario(
+                    c.getInt(0),
+                    c.getString(1),
+                    c.getString(2),
+                    c.getString(3),
+                    c.getInt(4),
+                    c.getString(5)
+                )
             } else null
         }
+    }
+
+    fun getUsuariosReport(start: String?, end: String?, limit: Int = 10): List<Usuario> {
+        val list = mutableListOf<Usuario>()
+        val whereClauses = mutableListOf<String>()
+        val args = mutableListOf<String>()
+        start?.let {
+            whereClauses += "fecha_registro >= ?"
+            args += it
+        }
+        end?.let {
+            whereClauses += "fecha_registro <= ?"
+            args += it
+        }
+        val where = if (whereClauses.isNotEmpty()) "WHERE " + whereClauses.joinToString(" AND ") else ""
+        val sql = "SELECT id_usuario, username, email, password_hash, id_perfil, fecha_registro FROM usuarios $where ORDER BY fecha_registro DESC LIMIT $limit"
+        readableDatabase.rawQuery(sql, args.toTypedArray()).use { cursor ->
+            while (cursor.moveToNext()) {
+                list += Usuario(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getString(3),
+                    cursor.getInt(4),
+                    cursor.getString(5)
+                )
+            }
+        }
+        return list
     }
 
     fun updateUsuario(id: Int, username: String, email: String, password: String, perfilId: Int) {

@@ -207,29 +207,6 @@ fun AnimalEditScreen(
                 Text(stringResource(R.string.save))
             }
 
-            Button(
-                onClick = {
-                    currentAnimal?.let {
-                        db.deleteAnimal(it.idAnimal)
-                        statusMsg = context.getString(R.string.animal_deleted)
-                        // limpiar form
-                        idField = ""
-                        zooIdField = ""; especieIdField = ""
-                        sexo = 'M'; anioField = ""
-                        paisOrigen = ""; continente = ""
-                        currentAnimal = null
-                    } ?: run {
-                        statusMsg = context.getString(R.string.animal_not_found)
-                    }
-                },
-                enabled = currentAnimal != null,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = null)
-                Spacer(Modifier.width(4.dp))
-                Text(stringResource(R.string.delete))
-            }
         }
 
         Spacer(Modifier.height(8.dp))

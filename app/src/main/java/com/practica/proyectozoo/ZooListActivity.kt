@@ -168,10 +168,6 @@ fun ZooListScreen(
                                         Intent(context, ZooEditActivity::class.java)
                                             .putExtra("zooId", zoo.id)
                                     )
-                                },
-                                onDelete = {
-                                    db.deleteZoo(zoo.id)
-                                    zoos.remove(zoo)
                                 }
                             )
                         }
@@ -184,8 +180,7 @@ fun ZooListScreen(
 
 @Composable
 fun DropdownMenuZoo(
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onEdit: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -201,14 +196,6 @@ fun DropdownMenuZoo(
                     expanded = false
                 },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
-            )
-            DropdownMenuItem(
-                text = { Text("Eliminar Zoo", color = Color.Red) },
-                onClick = {
-                    onDelete()
-                    expanded = false
-                },
-                leadingIcon = { Icon(Icons.Default.Delete, tint = Color.Red, contentDescription = null) }
             )
         }
     }

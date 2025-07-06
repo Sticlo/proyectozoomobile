@@ -198,17 +198,6 @@ fun DropdownMenuUserItem(user: Usuario, db: DatabaseHelper, usuarios: MutableLis
                     Icon(Icons.Default.Edit, contentDescription = null)
                 }
             )
-            DropdownMenuItem(
-                text = { Text("Eliminar", color = Color.Red) },
-                onClick = {
-                    db.deleteUsuario(user.id)
-                    usuarios.remove(user)
-                    expanded = false
-                },
-                leadingIcon = {
-                    Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
-                }
-            )
         }
     }
 }

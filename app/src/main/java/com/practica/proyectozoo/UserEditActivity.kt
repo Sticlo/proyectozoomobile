@@ -254,29 +254,6 @@ fun UserEditForm(
             ) {
                 Text(btnSave)
             }
-            Button(
-                onClick = {
-                    currentUser?.let {
-                        db.deleteUsuario(it.id)
-                        statusMsg = msgDeleted
-                        idField = ""
-                        username = ""
-                        email = ""
-                        password = ""
-                        selectedPerfil = perfiles.firstOrNull()?.first ?: 2
-                        currentUser = null
-                    } ?: run {
-                        statusMsg = msgNotFound
-                    }
-                },
-                modifier = Modifier.weight(1f),
-                enabled = currentUser != null,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = null)
-                Spacer(Modifier.width(4.dp))
-                Text(btnDelete)
-            }
         }
 
         Spacer(Modifier.height(8.dp))

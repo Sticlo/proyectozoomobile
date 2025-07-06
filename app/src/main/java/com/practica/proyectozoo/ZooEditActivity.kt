@@ -229,23 +229,6 @@ fun ZooEditForm(
             ) {
                 Text(stringResource(R.string.save))
             }
-            Button(
-                onClick = {
-                    current?.let {
-                        db.deleteZoo(it.id)
-                        status = ctx.getString(R.string.zoo_deleted)
-                        idField = ""; nombre = ""; ciudadId = ""; tamano = ""; presupuesto =
-                        ""; current = null
-                    }
-                },
-                enabled = current != null,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = null)
-                Spacer(Modifier.width(4.dp))
-                Text(stringResource(R.string.delete))
-            }
         }
 
         Spacer(Modifier.height(8.dp))

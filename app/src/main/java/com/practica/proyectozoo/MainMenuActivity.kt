@@ -25,6 +25,7 @@ import com.practica.proyectozoo.UserListActivity
 import com.practica.proyectozoo.ZooListActivity
 import com.practica.proyectozoo.EspecieListActivity
 import com.practica.proyectozoo.EspecieEditActivity
+import com.practica.proyectozoo.UserReportActivity
 
 class MainMenuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,6 +96,16 @@ fun MainMenuScreen(isAdmin: Boolean) {
                 iconColor       = Color(0xFF3B82F6),
                 onClick         = {
                     ctx.startActivity(Intent(ctx, ZooListActivity::class.java))
+                }
+            ))
+            add(MenuItemData(
+                title           = "Reportes",
+                description     = "Generar informes",
+                icon            = Icons.Default.Assessment,
+                backgroundColor = Color(0xFFE0E7FF),
+                iconColor       = Color(0xFF6366F1),
+                onClick         = {
+                    ctx.startActivity(Intent(ctx, UserReportActivity::class.java))
                 }
             ))
         }

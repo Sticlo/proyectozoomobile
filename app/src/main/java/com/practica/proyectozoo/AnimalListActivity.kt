@@ -204,17 +204,6 @@ fun DropdownMenuAnimalItem(
                     Icon(Icons.Default.Edit, contentDescription = null)
                 }
             )
-            DropdownMenuItem(
-                text = { Text("Eliminar", color = Color.Red) },
-                onClick = {
-                    db.deleteAnimal(animal.idAnimal)
-                    animales.remove(animal)
-                    expanded = false
-                },
-                leadingIcon = {
-                    Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
-                }
-            )
         }
     }
 }
