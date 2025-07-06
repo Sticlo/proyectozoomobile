@@ -73,4 +73,18 @@
     <string name="confirm_password">Confirmar contraseña</string>
     <string name="password_mismatch">Las contraseñas no coinciden</string>
     <string name="registration_success">Registro exitoso</string>
+    <string name="edit_animal">Editar animal</string>
+    <string name="zoo_id">ID zoológico</string>
+    <string name="especie_id">ID especie</string>
+    <string name="sexo">Sexo</string>
+    <string name="anio_nacimiento">Año nacimiento</string>
+    <string name="pais_origen">País origen</string>
+    <string name="continente">Continente</string>
+    <string name="animal_not_found">Animal no encontrado</string>
+    <string name="animal_saved">Animal guardado</string>
+    <string name="animal_updated">Animal actualizado</string>
+    <string name="animal_deleted">Animal eliminado</string>
+    <string name="invalid_zoo_id">ID de zoológico inválido</string>
+    <string name="invalid_especie_id">ID de especie inválido</string>
+
 </resources>
