@@ -518,5 +518,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         writableDatabase.delete("animales", "id_animal=?", arrayOf(id.toString()))
     }
 
+    // --- Reportes y métricas ---
+
+    private fun countFrom(table: String): Int {
+        readableDatabase.rawQuery("SELECT COUNT(*) FROM $table", null).use { c ->
+            return if (c.moveToFirst()) c.getInt(0) else 0
+        }
+    }
+
+    fun countUsuarios(): Int = countFrom("usuarios")
+    fun countZoos(): Int = countFrom("zoos")
+    fun countAnimales(): Int = countFrom("animales")
+    fun countEspecies(): Int = countFrom("especies")
+
 
 }
