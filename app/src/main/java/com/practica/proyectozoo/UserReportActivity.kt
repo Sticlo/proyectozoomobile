@@ -18,6 +18,7 @@ import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.data.Usuario
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 class UserReportActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
