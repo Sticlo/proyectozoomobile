@@ -210,17 +210,6 @@ fun DropdownMenuEspecieItem(especie: Especie, db: DatabaseHelper, especies: Muta
                     Icon(Icons.Default.Edit, contentDescription = null)
                 }
             )
-            DropdownMenuItem(
-                text = { Text("Eliminar", color = Color.Red) },
-                onClick = {
-                    db.deleteEspecie(especie.id)
-                    especies.remove(especie)
-                    expanded = false
-                },
-                leadingIcon = {
-                    Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
-                }
-            )
         }
     }
 }

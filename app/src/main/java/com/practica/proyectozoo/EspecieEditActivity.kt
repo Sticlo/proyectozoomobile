@@ -154,25 +154,6 @@ fun EspecieEditScreen(db: DatabaseHelper, modifier: Modifier = Modifier, onFinis
                 Text(context.getString(R.string.save))
             }
 
-            Button(
-                onClick = {
-                    currentEspecie?.let {
-                        db.deleteEspecie(it.id)
-                        statusMsg = context.getString(R.string.especie_deleted)
-                        idField = ""; nombreVulgar = ""; nombreCientifico = ""; familia = ""; enPeligro = false
-                        currentEspecie = null
-                    } ?: run {
-                        statusMsg = context.getString(R.string.especie_not_found)
-                    }
-                },
-                enabled = currentEspecie != null,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = null)
-                Spacer(Modifier.width(4.dp))
-                Text(context.getString(R.string.delete))
-            }
         }
 
         Spacer(Modifier.height(8.dp))
