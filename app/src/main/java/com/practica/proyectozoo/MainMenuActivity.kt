@@ -56,78 +56,96 @@ class MainMenuActivity : ComponentActivity() {
 fun MainMenuScreen(isAdmin: Boolean) {
     val ctx = LocalContext.current
 
-    // 2) Construye lista dinámica
     val menuItems = buildList<MenuItemData> {
+        // — Solo ADMIN ve Usuarios —
         if (isAdmin) {
-            add(MenuItemData(
-                title           = "Usuarios",
-                description     = "Gestionar usuarios y permisos",
-                icon            = Icons.Default.Person,
-                backgroundColor = Color(0xFFDCFCE7),
-                iconColor       = Color(0xFF22C55E),
-                onClick         = {
-                    ctx.startActivity(Intent(ctx, UserListActivity::class.java))
-                }
-            ))
+            add(
+                MenuItemData(
+                    title           = "Usuarios",
+                    description     = "Gestionar usuarios y permisos",
+                    icon            = Icons.Default.Person,
+                    backgroundColor = Color(0xFFDCFCE7),
+                    iconColor       = Color(0xFF22C55E),
+                    onClick         = {
+                        ctx.startActivity(Intent(ctx, UserListActivity::class.java))
+                    }
+                )
+            )
         }
 
-        // Siempre agregamos Especies, listado para admin, alta para usuario
-        add(MenuItemData(
-            title           = "Especies",
-            description     = if (isAdmin) "Ver especies registradas" else "Agregar nueva especie",
-            icon            = Icons.Default.Eco,
-            backgroundColor = Color(0xFFFEF3C7),
-            iconColor       = Color(0xFFF59E0B),
-            onClick         = {
-                val dest = if (isAdmin)
-                    EspecieListActivity::class.java
-                else
-                    EspecieEditActivity::class.java
-                ctx.startActivity(Intent(ctx, dest))
-            }
-        ))
-
-        if (isAdmin) {
-            add(MenuItemData(
-                title           = "Zoos",
-                description     = "Administrar zoológicos registrados",
-                icon            = Icons.Default.Home,
-                backgroundColor = Color(0xFFDBEAFE),
-                iconColor       = Color(0xFF3B82F6),
-                onClick         = {
-                    ctx.startActivity(Intent(ctx, ZooListActivity::class.java))
-                }
-            ))
-            add(MenuItemData(
-                title           = "Reportes",
-                description     = "Generar informes",
-                icon            = Icons.Default.Assessment,
-                backgroundColor = Color(0xFFE0E7FF),
-                iconColor       = Color(0xFF6366F1),
-                onClick         = {
-                    ctx.startActivity(Intent(ctx, UserReportActivity::class.java))
-                }
-            ))
-        }
-
+        // — Especies: listado para admin, alta para usuario —
         add(
             MenuItemData(
-                title = "Animales",
-                description = if (isAdmin) "Registro y seguimiento de animales" else "Agregar nuevo animal",
-                icon = Icons.Default.Pets,
-                backgroundColor = Color(0xFFFCE7F3),
-                iconColor = Color(0xFFEC4899),
-                onClick = {
-                    val dest = if (isAdmin) AnimalListActivity::class.java else AnimalEditActivity::class.java
+                title           = "Especies",
+                description     = if (isAdmin) "Ver especies registradas" else "Agregar nueva especie",
+                icon            = Icons.Default.Eco,
+                backgroundColor = Color(0xFFFEF3C7),
+                iconColor       = Color(0xFFF59E0B),
+                onClick         = {
+                    val dest = if (isAdmin)
+                        EspecieListActivity::class.java
+                    else
+                        EspecieEditActivity::class.java
                     ctx.startActivity(Intent(ctx, dest))
                 }
             )
         )
+
+        // — Zoos: listado para admin, alta para usuario —
+        add(
+            MenuItemData(
+                title           = "Zoos",
+                description     = if (isAdmin) "Administrar zoológicos registrados" else "Agregar nuevo zoológico",
+                icon            = Icons.Default.Home,
+                backgroundColor = Color(0xFFDBEAFE),
+                iconColor       = Color(0xFF3B82F6),
+                onClick         = {
+                    val dest = if (isAdmin)
+                        ZooListActivity::class.java
+                    else
+                        ZooEditActivity::class.java
+                    ctx.startActivity(Intent(ctx, dest))
+                }
+            )
+        )
+
+        // — Animales: listado para admin, alta para usuario —
+        add(
+            MenuItemData(
+                title           = "Animales",
+                description     = if (isAdmin) "Registro y seguimiento de animales" else "Agregar nuevo animal",
+                icon            = Icons.Default.Pets,
+                backgroundColor = Color(0xFFFCE7F3),
+                iconColor       = Color(0xFFEC4899),
+                onClick         = {
+                    val dest = if (isAdmin)
+                        AnimalListActivity::class.java
+                    else
+                        AnimalEditActivity::class.java
+                    ctx.startActivity(Intent(ctx, dest))
+                }
+            )
+        )
+
+        // — Solo ADMIN ve Reportes —
+        if (isAdmin) {
+            add(
+                MenuItemData(
+                    title           = "Reportes",
+                    description     = "Generar informes",
+                    icon            = Icons.Default.Assessment,
+                    backgroundColor = Color(0xFFE0E7FF),
+                    iconColor       = Color(0xFF6366F1),
+                    onClick         = {
+                        ctx.startActivity(Intent(ctx, UserReportActivity::class.java))
+                    }
+                )
+            )
+        }
     }
 
-    // 3) UI Compose
     Column(
-        modifier            = Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -147,7 +165,9 @@ fun MainMenuScreen(isAdmin: Boolean) {
             text     = "Selecciona una opción",
             style    = MaterialTheme.typography.titleMedium,
             color    = Color(0xFF475569),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp)
         )
 
         menuItems.forEach { item ->
