@@ -85,6 +85,8 @@
     <string name="animal_updated">Animal actualizado</string>
     <string name="animal_deleted">Animal eliminado</string>
     <string name="invalid_zoo_id">ID de zoológico inválido</string>
+    <string name="new_animal">Nuevo animal</string>
+    <string name="update">Actualizar</string>
     <string name="invalid_especie_id">ID de especie inválido</string>
 
 </resources>

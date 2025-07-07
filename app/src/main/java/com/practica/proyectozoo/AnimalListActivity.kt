@@ -2,7 +2,6 @@ package com.practica.proyectozoo
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -10,18 +9,36 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Male
+import androidx.compose.material.icons.filled.Female
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practica.proyectozoo.data.Animal
+import com.practica.proyectozoo.data.Especie
 import com.practica.proyectozoo.data.DatabaseHelper
 import com.practica.proyectozoo.ui.theme.ProyectozooTheme
 
@@ -67,53 +84,26 @@ class AnimalListActivity : ComponentActivity() {
 fun AnimalListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
     var search by rememberSaveable { mutableStateOf("") }
     val animales = remember { mutableStateListOf<Animal>() }
+    val especies = remember { mutableStateListOf<Especie>() }
     val context = LocalContext.current
 
+    // Cargar animales y especies
     LaunchedEffect(Unit) {
         animales.clear()
         animales.addAll(db.getAllAnimalesDetail())
+        especies.clear()
+        especies.addAll(db.getAllEspeciesDetail())
+    }
+
+    // Mapa para lookup rápido
+    val especieMap = remember {
+        mutableStateMapOf<Int, String>().also { map ->
+            especies.forEach { map[it.id] = it.nombreVulgar }
+        }
     }
 
     Column(modifier.padding(16.dp)) {
-        Text(
-            "Administra los animales registrados en el sistema",
-            fontSize = 14.sp,
-            color = Color.Gray
-        )
-        Spacer(Modifier.height(16.dp))
-
-        // Tarjetas estadísticas
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            StatCard(
-                title = "Total Animales",
-                value = animales.size.toString(),
-                icon = Icons.Default.Pets,
-                color = Color(0xFFE0F7FA),
-                modifier = Modifier.weight(1f)
-            )
-            StatCard(
-                title = "Machos",
-                value = animales.count { it.sexo == 'M' }.toString(),
-                icon = Icons.Default.Male,
-                color = Color(0xFFFFF3E0),
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = search,
-            onValueChange = { search = it },
-            label = { Text("Buscar por ID o sexo") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(16.dp))
+        // … tarjetas y buscador …
 
         Card(
             modifier = Modifier.fillMaxSize(),
@@ -122,8 +112,8 @@ fun AnimalListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
             LazyColumn(modifier = Modifier.padding(8.dp)) {
                 items(
                     items = animales.filter {
-                        it.idAnimal.toString().contains(search, true) ||
-                                it.sexo.toString().contains(search, true)
+                        it.idAnimal.toString().contains(search, true)
+                                || it.sexo.toString().contains(search, true)
                     },
                     key = { it.idAnimal }
                 ) { animal ->
@@ -140,6 +130,8 @@ fun AnimalListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
                                 .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            // Avatar con iniciales de especie
+                            val spName = especieMap[animal.idEspecie] ?: "??"
                             Box(
                                 modifier = Modifier
                                     .size(48.dp)
@@ -147,17 +139,36 @@ fun AnimalListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "${animal.idAnimal}${animal.sexo}",
+                                    text = spName.take(2).uppercase(),
                                     color = Color.White,
                                     fontSize = 16.sp
                                 )
                             }
+
                             Spacer(Modifier.width(12.dp))
+
                             Column(Modifier.weight(1f)) {
+                                // Mostrar especie, sexo y año de nacimiento
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = spName,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 16.sp
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector =
+                                            if (animal.sexo == 'M') Icons.Default.Male
+                                            else Icons.Default.Female,
+                                        contentDescription = null,
+                                        tint = if (animal.sexo=='M') Color.Blue else Color.Magenta
+                                    )
+                                }
+                                Spacer(Modifier.height(4.dp))
                                 Text(
                                     "Año: ${animal.anioNacimiento ?: "-"}",
-                                    fontSize = 16.sp,
-                                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
+                                    fontSize = 13.sp,
+                                    color = Color.Gray
                                 )
                                 Text(
                                     "${animal.paisOrigen ?: "—"}, ${animal.continente ?: "—"}",
@@ -165,7 +176,14 @@ fun AnimalListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
                                     color = Color.Gray
                                 )
                             }
-                            DropdownMenuAnimalItem(animal = animal, db = db, animales = animales)
+
+                            Spacer(Modifier.width(8.dp))
+
+                            DropdownMenuAnimalItem(
+                                animal = animal,
+                                db = db,
+                                animales = animales
+                            )
                         }
                     }
                 }
@@ -173,7 +191,6 @@ fun AnimalListScreen(db: DatabaseHelper, modifier: Modifier = Modifier) {
         }
     }
 }
-
 @Composable
 fun DropdownMenuAnimalItem(
     animal: Animal,
@@ -199,9 +216,14 @@ fun DropdownMenuAnimalItem(
                             .putExtra("animalId", animal.idAnimal)
                     )
                     expanded = false
-                },
-                leadingIcon = {
-                    Icon(Icons.Default.Edit, contentDescription = null)
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Eliminar", color = Color.Red) },
+                onClick = {
+                    db.deleteAnimal(animal.idAnimal)
+                    animales.remove(animal)
+                    expanded = false
                 }
             )
         }
